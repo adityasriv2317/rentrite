@@ -31,12 +31,11 @@ const Chatbot = () => {
         region: "India",
       });
       
-      const botMessage = { sender: "bot", text: response.data.response };
-      console.log(botMessage);
+      const botMessage = { sender: "bot", text: response.data.response, expanded: false };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Error fetching chatbot response:", error);
-      setMessages((prev) => [...prev, { sender: "bot", text: "Error fetching response. Please try again." }]);
+      setMessages((prev) => [...prev, { sender: "bot", text: "Error fetching response. Please try again.", expanded: false }]);
     }
     setLoading(false);
   };
@@ -45,6 +44,12 @@ const Chatbot = () => {
     if (e.key === "Enter") {
       handleSendMessage();
     }
+  };
+
+  const toggleExpand = (index) => {
+    setMessages((prev) =>
+      prev.map((msg, i) => (i === index ? { ...msg, expanded: !msg.expanded } : msg))
+    );
   };
 
   return (
@@ -63,9 +68,9 @@ const Chatbot = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed inset-0 z-50 flex items-center justify-center px-3 bg-gray-800 bg-opacity-50"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
           >
-            <div className="bg-white w-full max-w-md h-3/4 p-6 rounded-lg shadow-xl flex flex-col">
+            <div className="bg-white md:w-[80%] not-md:max-w-md h-3/4 p-6 rounded-lg shadow-xl flex flex-col">
               <div className="flex justify-between items-center border-b pb-3">
                 <h4 className="text-lg font-semibold">Chat with AI</h4>
                 <button
@@ -79,7 +84,19 @@ const Chatbot = () => {
               <div className="flex-1 overflow-y-auto py-2 text-gray-700">
                 {messages.map((msg, index) => (
                   <div key={index} className={`p-2 my-1 rounded-lg ${msg.sender === "user" ? "bg-blue-100 self-end" : "bg-gray-200 self-start"}`}>
-                    {msg.text}
+                    {msg.sender === "bot" && msg.text.length > 300 ? (
+                      <>
+                        {msg.expanded ? msg.text : `${msg.text.slice(0, 300)}...`}
+                        <button
+                          onClick={() => toggleExpand(index)}
+                          className="text-blue-500 ml-2 underline"
+                        >
+                          {msg.expanded ? "Read Less" : "Read More"}
+                        </button>
+                      </>
+                    ) : (
+                      msg.text
+                    )}
                   </div>
                 ))}
                 {loading && <div className="text-gray-500">Generating...</div>}
