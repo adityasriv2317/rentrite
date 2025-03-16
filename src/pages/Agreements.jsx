@@ -1,10 +1,15 @@
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext"; // Import useAuth hook
 
 function Agreements() {
+  const { user } = useAuth(); // Destructure user from useAuth
+
   // Dummy agreement data (Replace with API call later)
   const [agreements, setAgreements] = useState([
     { id: 1, title: "Rental Agreement - Apartment A", status: "Signed" },
     { id: 2, title: "Lease Agreement - Office Space", status: "Pending" },
+    { id: 3, title: "Rental Agreement - Apartment B", status: "Signed" },
+    { id: 4, title: "Lease Agreement - Retail Store", status: "Pending" },
   ]);
 
   return (

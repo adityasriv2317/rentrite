@@ -12,11 +12,11 @@ const API_URL = "https://rentify-fm53.onrender.com/users/update-profile";
 // Profile Provider
 export function ProfileProvider({ children }) {
   const [profile, setProfile] = useState({
-    name: "",
-    age: "",
-    gender: "",
-    aadhaar: "",
-    pan: "",
+    name: "John Doe",
+    age: "30",
+    gender: "Male",
+    aadhaar: "1234-5678-9012",
+    pan: "ABCDE1234F",
   });
 
   // Function to update profile
@@ -79,7 +79,11 @@ function Profile() {
 
       <div className="space-y-4">
         {/* Name */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <label className="block text-gray-700 font-medium">Name</label>
           <input
             type="text"
@@ -89,10 +93,14 @@ function Profile() {
             disabled={!editing}
             className="w-full border p-2 rounded focus:outline-none"
           />
-        </div>
+        </motion.div>
 
         {/* Age */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <label className="block text-gray-700 font-medium">Age</label>
           <input
             type="number"
@@ -102,10 +110,14 @@ function Profile() {
             disabled={!editing}
             className="w-full border p-2 rounded focus:outline-none"
           />
-        </div>
+        </motion.div>
 
         {/* Gender */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <label className="block text-gray-700 font-medium">Gender</label>
           <select
             name="gender"
@@ -119,10 +131,14 @@ function Profile() {
             <option value="Female">Female</option>
             <option value="Other">Other</option>
           </select>
-        </div>
+        </motion.div>
 
         {/* Aadhaar */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
           <label className="block text-gray-700 font-medium">Aadhaar Number</label>
           <input
             type="text"
@@ -132,10 +148,14 @@ function Profile() {
             disabled={!editing}
             className="w-full border p-2 rounded focus:outline-none"
           />
-        </div>
+        </motion.div>
 
         {/* PAN */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
           <label className="block text-gray-700 font-medium">PAN Number</label>
           <input
             type="text"
@@ -145,7 +165,7 @@ function Profile() {
             disabled={!editing}
             className="w-full border p-2 rounded focus:outline-none"
           />
-        </div>
+        </motion.div>
       </div>
 
       {/* Buttons */}
