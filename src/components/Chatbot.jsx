@@ -70,7 +70,7 @@ const Chatbot = () => {
             exit={{ opacity: 0, y: 20 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
           >
-            <div className="bg-white md:w-[80%] not-md:max-w-md h-3/4 p-6 rounded-lg shadow-xl flex flex-col">
+            <div className="bg-white w-full max-w-md h-3/4 p-6 rounded-lg shadow-xl flex flex-col">
               <div className="flex justify-between items-center border-b pb-3">
                 <h4 className="text-lg font-semibold">Chat with AI</h4>
                 <button
