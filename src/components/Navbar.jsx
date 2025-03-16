@@ -10,8 +10,8 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-blue-600 p-4 text-white shadow-md flex justify-between items-center relative">
-      {/* Logo with File Icon */}
+    <nav className="bg-blue-600 p-4 text-white shadow-md flex justify-between items-center relative font-[Poppins]">
+      {/* Logo */}
       <Link to="/" className="text-2xl font-bold flex items-center gap-2">
         <FaFileAlt className="text-white" />
         RentRite
@@ -20,15 +20,14 @@ function Navbar() {
       {/* Hamburger Menu Button (Mobile) */}
       <button
         className="md:hidden text-2xl focus:outline-none"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
       >
         {isOpen ? <FaTimes /> : <FaBars />}
       </button>
 
-      {/* Desktop Nav Links */}
+      {/* Desktop Navigation */}
       <div className="hidden md:flex gap-6">
         <NavItem to="/" label="Home" icon={<FaHome />} />
-
         {user ? (
           <>
             <NavItem to="/dashboard" label="Dashboard" icon={<FaChartPie />} />
@@ -44,18 +43,17 @@ function Navbar() {
         )}
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Navigation */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="absolute top-16 left-0 w-full bg-blue-700 md:hidden flex flex-col items-center gap-4 py-4 shadow-lg"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
+            className="absolute top-16 left-0 w-full bg-blue-600 md:hidden flex flex-col items-center gap-4 py-4 shadow-xl rounded-b-lg z-50"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.1 }}
           >
             <NavItem to="/" label="Home" icon={<FaHome />} onClick={() => setIsOpen(false)} />
-
             {user ? (
               <>
                 <NavItem to="/dashboard" label="Dashboard" icon={<FaChartPie />} onClick={() => setIsOpen(false)} />
@@ -76,11 +74,11 @@ function Navbar() {
   );
 }
 
-// Reusable Nav Item with animations
+// Reusable Nav Item with hover animation
 function NavItem({ to, label, icon, onClick }) {
   return (
     <motion.div whileHover={{ scale: 1.1 }} className="relative" onClick={onClick}>
-      <Link to={to} className="flex items-center gap-2 font-medium relative px-3 py-1">
+      <Link to={to} className="flex items-center gap-2 text-lg font-medium px-3 py-1">
         {icon} {label}
       </Link>
       <motion.div
