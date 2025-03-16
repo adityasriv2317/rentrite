@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   FaUser,
   FaEnvelope,
@@ -10,9 +11,8 @@ import {
   FaSpinner,
   FaHome,
 } from "react-icons/fa";
-import { motion } from "framer-motion";
 
-const url = "https://rentify-fm53.onrender.com/users/signup";
+const API_URL = "https://rentify-fm53.onrender.com/users/signup";
 
 function Register() {
   const navigate = useNavigate();
@@ -29,32 +29,25 @@ function Register() {
     setError("");
 
     try {
-      const response = await axios.post(url, {
-        "name": name,
-        "email": email,
-        "password": password,
-      });
-      localStorage.setItem("token", response.data.token);
-      navigate("/dashboard");
+      const response = await axios.post(API_URL, { name, email, password });
+      console.log(response);
+      if (response.status === 200) {
+        navigate("/login"); // Redirect after successful signup
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create an account.");
+      setError(err.response?.data?.message || "Signup failed. Try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <motion.div
-      className="min-h-full my-18 flex flex-col justify-center items-center bg-gray-100 p-4"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div className="min-h-ful my-15 py-6 flex items-center justify-center bg-gray-100">
       <motion.div
-        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm"
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
+        className="panel bg-white p-8 rounded-lg shadow-lg w-full max-w-sm"
       >
         <h2 className="text-3xl font-bold text-center mb-6 text-blue-600">
           Create Your RentRite Account
@@ -62,10 +55,9 @@ function Register() {
 
         {error && (
           <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
             className="text-red-500 text-center mb-4 border border-red-400 p-2 rounded"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
           >
             {error}
           </motion.p>
@@ -73,11 +65,11 @@ function Register() {
 
         <form onSubmit={handleSignup} className="space-y-4">
           {/* Name Input */}
-          <motion.div whileFocus={{ scale: 1.02 }}>
+          <div>
             <label className="block text-gray-700 font-medium mb-2">
               Full Name
             </label>
-            <div className="flex items-center border rounded p-2 focus-within:ring-2 focus-within:ring-blue-500">
+            <div className="flex items-center border rounded p-2">
               <FaUser className="text-gray-500 mr-2" />
               <input
                 type="text"
@@ -88,14 +80,14 @@ function Register() {
                 placeholder="Enter your full name"
               />
             </div>
-          </motion.div>
+          </div>
 
           {/* Email Input */}
-          <motion.div whileFocus={{ scale: 1.02 }}>
+          <div>
             <label className="block text-gray-700 font-medium mb-2">
               Email
             </label>
-            <div className="flex items-center border rounded p-2 focus-within:ring-2 focus-within:ring-blue-500">
+            <div className="flex items-center border rounded p-2">
               <FaEnvelope className="text-gray-500 mr-2" />
               <input
                 type="email"
@@ -106,14 +98,14 @@ function Register() {
                 placeholder="Enter your email"
               />
             </div>
-          </motion.div>
+          </div>
 
           {/* Password Input */}
-          <motion.div whileFocus={{ scale: 1.02 }}>
+          <div>
             <label className="block text-gray-700 font-medium mb-2">
               Password
             </label>
-            <div className="flex items-center border rounded p-2 focus-within:ring-2 focus-within:ring-blue-500">
+            <div className="flex items-center border rounded p-2">
               <FaLock className="text-gray-500 mr-2" />
               <input
                 type={showPassword ? "text" : "password"}
@@ -126,21 +118,20 @@ function Register() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-gray-500 ml-2 focus:outline-none"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="text-gray-500 ml-2"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-          </motion.div>
+          </div>
 
           {/* Submit Button */}
           <motion.button
             type="submit"
-            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition disabled:opacity-50 flex items-center justify-center"
-            disabled={loading}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            className="w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition disabled:opacity-50 flex items-center justify-center"
+            disabled={loading}
           >
             {loading ? <FaSpinner className="animate-spin mr-2" /> : null}
             {loading ? "Creating account..." : "Sign Up"}
@@ -156,12 +147,12 @@ function Register() {
 
         <Link
           to="/"
-          className="mt-6 text-blue-500 hover:underline text-center flex items-center justify-center"
+          className="mt-6 text-blue-500 hover:underline flex items-center justify-center"
         >
           <FaHome className="mr-2" /> Back to Home
         </Link>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
 

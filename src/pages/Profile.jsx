@@ -1,59 +1,178 @@
-import { useState } from "react";
+import { useState, useContext, createContext, useEffect } from "react";
+import axios from "axios";
+import { motion } from "framer-motion";
+import { FaEdit, FaSave, FaSpinner } from "react-icons/fa";
 
-function Profile() {
+// Create Profile Context
+const ProfileContext = createContext();
+
+// API Base URL
+const API_URL = "https://rentify-fm53.onrender.com/users/update-profile";
+
+// Profile Provider
+export function ProfileProvider({ children }) {
   const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "+123456789",
+    name: "",
+    age: "",
+    gender: "",
+    aadhaar: "",
+    pan: "",
   });
 
-  const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+  // Function to update profile
+  const updateProfile = async (updatedData) => {
+    try {
+      const response = await axios.post(API_URL, updatedData);
+      if (response.status === 200) {
+        setProfile(updatedData);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error.response?.data || error.message);
+    }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Profile Settings</h1>
+    <ProfileContext.Provider value={{ profile, setProfile, updateProfile }}>
+      {children}
+    </ProfileContext.Provider>
+  );
+}
 
-      <div className="bg-white shadow-md rounded-lg p-6 max-w-lg mx-auto">
-        <div className="mb-4">
-          <label className="block text-gray-600">Name</label>
+// Custom Hook for Profile Context
+export function useProfile() {
+  return useContext(ProfileContext);
+}
+
+// Profile Component
+function Profile() {
+  const { profile, setProfile, updateProfile } = useProfile();
+  const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState(profile);
+
+  // Update form data when profile changes
+  useEffect(() => {
+    setFormData(profile);
+  }, [profile]);
+
+  // Handle input change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle profile update
+  const handleUpdate = async () => {
+    setLoading(true);
+    await updateProfile(formData);
+    setEditing(false);
+    setLoading(false);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg mt-10"
+    >
+      <h2 className="text-2xl font-bold text-center mb-4 text-blue-600">Profile</h2>
+
+      <div className="space-y-4">
+        {/* Name */}
+        <div>
+          <label className="block text-gray-700 font-medium">Name</label>
           <input
             type="text"
             name="name"
-            value={profile.name}
+            value={formData.name}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            disabled={!editing}
+            className="w-full border p-2 rounded focus:outline-none"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-600">Email</label>
+        {/* Age */}
+        <div>
+          <label className="block text-gray-700 font-medium">Age</label>
           <input
-            type="email"
-            name="email"
-            value={profile.email}
+            type="number"
+            name="age"
+            value={formData.age}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            disabled={!editing}
+            className="w-full border p-2 rounded focus:outline-none"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-600">Phone</label>
+        {/* Gender */}
+        <div>
+          <label className="block text-gray-700 font-medium">Gender</label>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            disabled={!editing}
+            className="w-full border p-2 rounded focus:outline-none"
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        {/* Aadhaar */}
+        <div>
+          <label className="block text-gray-700 font-medium">Aadhaar Number</label>
           <input
             type="text"
-            name="phone"
-            value={profile.phone}
+            name="aadhaar"
+            value={formData.aadhaar}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            disabled={!editing}
+            className="w-full border p-2 rounded focus:outline-none"
           />
         </div>
 
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-          Save Changes
-        </button>
+        {/* PAN */}
+        <div>
+          <label className="block text-gray-700 font-medium">PAN Number</label>
+          <input
+            type="text"
+            name="pan"
+            value={formData.pan}
+            onChange={handleChange}
+            disabled={!editing}
+            className="w-full border p-2 rounded focus:outline-none"
+          />
+        </div>
       </div>
-    </div>
+
+      {/* Buttons */}
+      <div className="mt-6 flex justify-center">
+        {editing ? (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleUpdate}
+            className="bg-green-500 text-white px-4 py-2 rounded flex items-center"
+            disabled={loading}
+          >
+            {loading ? <FaSpinner className="animate-spin mr-2" /> : <FaSave className="mr-2" />}
+            {loading ? "Saving..." : "Save"}
+          </motion.button>
+        ) : (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setEditing(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
+          >
+            <FaEdit className="mr-2" /> Edit Profile
+          </motion.button>
+        )}
+      </div>
+    </motion.div>
   );
 }
 

@@ -1,20 +1,12 @@
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import {
-  FaEnvelope,
-  FaLock,
-  FaEye,
-  FaEyeSlash,
-  FaHome,
-  FaSpinner,
-} from "react-icons/fa";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaSpinner, FaHome } from "react-icons/fa";
 
 const API_URL = "https://rentify-fm53.onrender.com/users/login";
 
 function Login() {
-  const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,110 +20,101 @@ function Login() {
     setError("");
 
     try {
-      const response = await axios.post(API_URL, {
-        email: email,
-        password: password,
-      });
-
+      const response = await axios.post(API_URL, { email, password });
       if (response.status === 200) {
-        const { token, user } = response.data;
-
-        // Save token to localStorage or sessionStorage
-        localStorage.setItem("authToken", token);
-
-        // Store user details if needed
-        login(user);
-
-        // Redirect to dashboard
-        navigate("/dashboard");
+        navigate("/dashboard"); // Redirect after successful login
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid email or password.");
+      setError(err.response?.data?.message || "Login failed. Try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-full my-28 bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
-          Login to RentRite
-        </h2>
+    <div className="min-h-full my-23 py-6 flex items-center justify-center bg-gray-100">
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="panel bg-white p-8 rounded-lg shadow-lg w-full max-w-sm"
+      >
+        <h2 className="text-3xl font-bold text-center mb-6 text-blue-600">Login to RentRite</h2>
 
         {error && (
-          <p className="text-red-500 text-center mb-4 border border-red-400 p-2 rounded">
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-red-500 text-center mb-4 border border-red-400 p-2 rounded"
+          >
             {error}
-          </p>
+          </motion.p>
         )}
 
         <form onSubmit={handleLogin} className="space-y-4">
+          {/* Email Input */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Email
-            </label>
-            <div className="flex items-center border rounded p-2 focus-within:ring-2 focus-within:ring-blue-500 bg-gray-50">
+            <label className="block text-gray-700 font-medium mb-2">Email</label>
+            <div className="flex items-center border rounded p-2">
               <FaEnvelope className="text-gray-500 mr-2" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full bg-transparent focus:outline-none"
+                className="w-full focus:outline-none"
                 placeholder="Enter your email"
               />
             </div>
           </div>
 
+          {/* Password Input */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Password
-            </label>
-            <div className="flex items-center border rounded p-2 focus-within:ring-2 focus-within:ring-blue-500 bg-gray-50">
+            <label className="block text-gray-700 font-medium mb-2">Password</label>
+            <div className="flex items-center border rounded p-2">
               <FaLock className="text-gray-500 mr-2" />
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full bg-transparent focus:outline-none"
+                className="w-full focus:outline-none"
                 placeholder="Enter your password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-gray-500 ml-2 focus:outline-none"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="text-gray-500 ml-2"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           </div>
 
-          <button
+          {/* Submit Button */}
+          <motion.button
             type="submit"
-            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition disabled:opacity-50 flex items-center justify-center"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition disabled:opacity-50 flex items-center justify-center"
             disabled={loading}
           >
             {loading ? <FaSpinner className="animate-spin mr-2" /> : null}
             {loading ? "Logging in..." : "Login"}
-          </button>
+          </motion.button>
         </form>
 
         <p className="mt-6 text-center text-gray-600">
           Don't have an account?{" "}
           <Link to="/register" className="text-blue-500 hover:underline">
-            Sign up
+            Sign Up
           </Link>
         </p>
 
-        <Link
-          to="/"
-          className="mt-6 text-blue-500 hover:underline flex items-center justify-center"
-        >
+        <Link to="/" className="mt-6 text-blue-500 hover:underline flex items-center justify-center">
           <FaHome className="mr-2" /> Back to Home
         </Link>
-      </div>
+      </motion.div>
     </div>
   );
 }
