@@ -125,6 +125,7 @@ function LawyerDB() {
           </table>
         </div>
       </div>
+      
     </div>
   );
 }

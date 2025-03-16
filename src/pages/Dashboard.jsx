@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import Card from "../components/Card"; // Import LawyerCard component
+import Chatbot from "../components/Chatbot";
 
 const API_URL = "https://rentify-fm53.onrender.com/lawyers/list-all";
 
@@ -63,6 +64,7 @@ function Dashboard() {
           <Card key={lawyer.id} lawyer={lawyer} />
         ))}
       </motion.div>
+      <Chatbot />
     </div>
   );
 }

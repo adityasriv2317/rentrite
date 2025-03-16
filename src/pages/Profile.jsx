@@ -2,11 +2,13 @@ import { useState, useContext, createContext, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { FaEdit, FaSave, FaSpinner, FaCamera } from "react-icons/fa";
+import Chatbot from "../components/Chatbot";
 
 // Profile Context
 const ProfileContext = createContext();
 const API_URL = "https://rentify-fm53.onrender.com/users/update/";
 const profileAPI = "https://rentify-fm53.onrender.com/users/findByEmail/";
+const imgURL = "https://rentify-fm53.onrender.com/users/uploadPhoto/";
 
 // Profile Provider
 export function ProfileProvider({ children }) {
@@ -39,14 +41,14 @@ export function ProfileProvider({ children }) {
     formData.append("file", image);
     const userName = profile.name;
     try {
-      const response = await axios.post(`${API_URL}${userName}`, formData, {
+      const response = await axios.post(`${imgURL}${userName}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       if (response.status === 200) {
         setProfile(updatedData);
-        console.log("Profile updated successfully");
+        console.log("Profile updated - -successfully");
       }
     } catch (error) {
       console.error(
@@ -306,6 +308,7 @@ function Profile() {
           {calculateCompletion()}% Complete
         </p>
       </div>
+      <Chatbot />
     </motion.div>
   );
 }

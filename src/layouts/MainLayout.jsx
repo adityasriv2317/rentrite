@@ -8,7 +8,7 @@ function MainLayout({ children }) {
       <Navbar />
       <main className="flex-grow">{children}</main>
       <Footer />
-      <Chatbot />
+      {/* <Chatbot /> */}
     </div>
   );
 }

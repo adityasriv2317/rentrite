@@ -3,6 +3,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Chatbot from "../components/Chatbot";
 
 const API_URL = "https://rentify-fm53.onrender.com/lawyers/login";
 

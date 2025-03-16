@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Chatbot from "../components/Chatbot";
 
 const sampleClients = [
   {
@@ -122,6 +123,7 @@ function LawyerDB() {
           </tbody>
         </table>
       </div>
+      <Chatbot />
     </div>
   );
 }
