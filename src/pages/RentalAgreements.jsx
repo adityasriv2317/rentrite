@@ -175,6 +175,45 @@ function RentalAgreement() {
           </PDFDownloadLink>
         </div>
       </div>
+
+      {/* live preview */}
+      <div
+        className="md:w-1/2 p-6 h-fit border rounded-lg bg-gray-100"
+      >
+        <h2 className="text-2xl font-bold text-center">Rental Agreement</h2>
+        <p className="mt-4">
+          This rental agreement is made between <b>{formData.ownerName}</b>{" "}
+          (Owner) and <b>{formData.tenantName}</b> (Tenant) for the property
+          located at <b>{formData.rentalAddress}</b>.
+        </p>
+        <p className="mt-2">
+          The agreement is effective from <b>{formData.startDate}</b> to{" "}
+          <b>{formData.endDate}</b>.
+        </p>
+        <p className="mt-2">
+          The monthly rent is <b>₹{formData.rentAmount}</b> and the security
+          deposit is <b>₹{formData.securityDeposit}</b>.
+        </p>
+        <p className="mt-4">
+          Owner Contact: {formData.ownerPhone}, {formData.ownerEmail}
+        </p>
+        <p className="mt-2">
+          Tenant Contact: {formData.tenantPhone}, {formData.tenantEmail}
+        </p>
+        <p className="mt-6 text-center font-bold">Signatures:</p>
+        <div className="flex justify-between mt-4">
+          <p>
+            ___________________
+            <br />
+            Owner
+          </p>
+          <p>
+            ___________________
+            <br />
+            Tenant
+          </p>
+        </div>
+      </div>
       <Chatbot />
     </div>
   );

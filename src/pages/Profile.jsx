@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { FaEdit, FaSave, FaSpinner, FaCamera } from "react-icons/fa";
 import Chatbot from "../components/Chatbot";
 
+import user from '../img/user.jpg';
+
 // Profile Context
 const ProfileContext = createContext();
 const API_URL = "https://rentify-fm53.onrender.com/users/update/";
@@ -41,22 +43,45 @@ export function ProfileProvider({ children }) {
     formData.append("file", image);
     const userName = profile.name;
     try {
-      const response = await axios.post(`${imgURL}${userName}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `https://rentify-fm53.onrender.com/users/uploadPhoto/${userName}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            // Authorization: Bearer`${localStorage.getItem("accessToken")}`, // If authentication is required
+          },
+          withCredentials: true, // If CORS requires credentials
+        }
+      );
       if (response.status === 200) {
-        setProfile(updatedData);
-        console.log("Profile updated - -successfully");
+        console.log("Profile photo uploaded successfully");
       }
     } catch (error) {
       console.error(
-        "Error updating profile:",
+        "Error uploading profile photo:",
         error.response?.data || error.message
       );
     }
   };
+
+  //   try {
+  //     const response = await axios.post(`${imgURL}${userName}`, formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+  //     if (response.status === 200) {
+  //       setProfile(updatedData);
+  //       console.log("Profile updated - -successfully");
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "Error updating profile:",
+  //       error.response?.data || error.message
+  //     );
+  //   }
+  // };
 
   return (
     <ProfileContext.Provider value={{ profile, setProfile, updateProfile }}>
@@ -174,11 +199,11 @@ function Profile() {
       <div className="flex items-center space-x-4 mb-6">
         <div className="relative">
           <img
-            src={profilePhoto}
+            src={user}
             alt="Profile"
             className="w-24 h-24 rounded-full border-4 border-blue-500 object-cover"
           />
-          {editing && (
+          {/* {editing && (
             <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer">
               <FaCamera />
               <input
@@ -188,7 +213,7 @@ function Profile() {
                 className="hidden"
               />
             </label>
-          )}
+          )} */}
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-800">{profile.name}</h2>
