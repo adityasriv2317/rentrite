@@ -19,23 +19,34 @@ const Chatbot = () => {
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
-    
+
     const userMessage = { sender: "user", text: message };
     setMessages((prev) => [...prev, userMessage]);
     setMessage("");
     setLoading(true);
-    
+
     try {
       const response = await axios.post(botApi, {
         query: message,
         region: "India",
       });
-      
-      const botMessage = { sender: "bot", text: response.data.response, expanded: false };
+
+      const botMessage = {
+        sender: "bot",
+        text: response.data.response,
+        expanded: false,
+      };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Error fetching chatbot response:", error);
-      setMessages((prev) => [...prev, { sender: "bot", text: "Error fetching response. Please try again.", expanded: false }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: "Error fetching response. Please try again.",
+          expanded: false,
+        },
+      ]);
     }
     setLoading(false);
   };
@@ -48,20 +59,24 @@ const Chatbot = () => {
 
   const toggleExpand = (index) => {
     setMessages((prev) =>
-      prev.map((msg, i) => (i === index ? { ...msg, expanded: !msg.expanded } : msg))
+      prev.map((msg, i) =>
+        i === index ? { ...msg, expanded: !msg.expanded } : msg
+      )
     );
   };
 
   return (
-    <div className="fixed bottom-8 right-6 z-50">
-      <button
-        onClick={() => setChatOpen(!chatOpen)}
-        className="bg-blue-500 hover:bg-blue-700 transition-all ease-in-out text-white cursor-pointer p-3 rounded-full shadow-lg flex items-center space-x-2"
-      >
-        <FaRobot />
-        <span>Chatbot</span>
-      </button>
-      
+    <div className="fixed bottom-4.5 right-18 z-50">
+      {!chatOpen && (
+        <button
+          onClick={() => setChatOpen(!chatOpen)}
+          className="bg-blue-500 hover:bg-blue-700 transition-all ease-in-out text-white cursor-pointer p-3 rounded-full shadow-lg flex items-center space-x-2"
+        >
+          <FaRobot />
+          <span>Chatbot</span>
+        </button>
+      )}
+
       <AnimatePresence>
         {chatOpen && (
           <motion.div
@@ -80,13 +95,22 @@ const Chatbot = () => {
                   <FaTimes />
                 </button>
               </div>
-              
+
               <div className="flex-1 overflow-y-auto py-2 text-gray-700">
                 {messages.map((msg, index) => (
-                  <div key={index} className={`p-2 my-1 rounded-lg ${msg.sender === "user" ? "bg-blue-100 self-end" : "bg-gray-200 self-start"}`}>
+                  <div
+                    key={index}
+                    className={`p-2 my-1 rounded-lg ${
+                      msg.sender === "user"
+                        ? "bg-blue-100 self-end"
+                        : "bg-gray-200 self-start"
+                    }`}
+                  >
                     {msg.sender === "bot" && msg.text.length > 300 ? (
                       <>
-                        {msg.expanded ? msg.text : `${msg.text.slice(0, 300)}...`}
+                        {msg.expanded
+                          ? msg.text
+                          : `${msg.text.slice(0, 300)}...`}
                         <button
                           onClick={() => toggleExpand(index)}
                           className="text-blue-500 ml-2 underline"
@@ -101,7 +125,7 @@ const Chatbot = () => {
                 ))}
                 {loading && <div className="text-gray-500">Generating...</div>}
               </div>
-              
+
               <div className="flex items-center mt-3">
                 <input
                   type="text"
