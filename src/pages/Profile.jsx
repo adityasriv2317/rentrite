@@ -5,7 +5,7 @@ import { FaEdit, FaSave, FaSpinner, FaCamera } from "react-icons/fa";
 
 // Profile Context
 const ProfileContext = createContext();
-const API_URL = "https://rentify-fm53.onrender.com/users/update-profile";
+const API_URL = "https://rentify-fm53.onrender.com/users/update/";
 const profileAPI = "https://rentify-fm53.onrender.com/users/findByEmail/";
 
 // Profile Provider
@@ -15,19 +15,44 @@ export function ProfileProvider({ children }) {
     email: "",
     age: "",
     gender: "",
-    aadhaar: "",
-    pan: "",
-    avatar: "",
+    adhaarNum: "",
+    panCardNum: "",
+    profilePhoto: "",
   });
 
-  const updateProfile = async (updatedData) => {
+  const updateProfile = async (updatedData, image) => {
+    const email = profile.email;
     try {
-      const response = await axios.post(API_URL, updatedData);
+      const response = await axios.put(`${API_URL}${email}`, updatedData);
       if (response.status === 200) {
         setProfile(updatedData);
+        console.log("Profile updated successfully");
       }
     } catch (error) {
-      console.error("Error updating profile:", error.response?.data || error.message);
+      console.error(
+        "Error updating profile:",
+        error.response?.data || error.message
+      );
+    }
+
+    const formData = new FormData();
+    formData.append("file", image);
+    const userName = profile.name;
+    try {
+      const response = await axios.post(`${API_URL}${userName}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (response.status === 200) {
+        setProfile(updatedData);
+        console.log("Profile updated successfully");
+      }
+    } catch (error) {
+      console.error(
+        "Error updating profile:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -50,7 +75,9 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState(profile);
-  const [avatar, setAvatar] = useState(profile.avatar || "https://via.placeholder.com/150");
+  const [profilePhoto, setprofilePhoto] = useState(
+    profile.profilePhoto || "https://via.placeholder.com/150"
+  );
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -73,7 +100,10 @@ function Profile() {
         const response = await axios.get(`${profileAPI}${email}`);
         setProfile(response.data);
       } catch (error) {
-        console.error("Error fetching profile:", error.response?.data || error.message);
+        console.error(
+          "Error fetching profile:",
+          error.response?.data || error.message
+        );
       } finally {
         setLoading(false);
       }
@@ -84,7 +114,7 @@ function Profile() {
 
   useEffect(() => {
     setFormData(profile);
-    setAvatar(profile.avatar || "https://via.placeholder.com/150");
+    setprofilePhoto(profile.profilePhoto || "https://via.placeholder.com/150");
   }, [profile]);
 
   const handleChange = (e) => {
@@ -93,24 +123,31 @@ function Profile() {
 
   const handleUpdate = async () => {
     setSaving(true);
-    await updateProfile({ ...formData, avatar });
+    await updateProfile({ ...formData, profilePhoto });
     setEditing(false);
     setSaving(false);
   };
 
-  const handleAvatarChange = (e) => {
+  const handleprofilePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatar(reader.result);
+        setprofilePhoto(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const calculateCompletion = () => {
-    const fields = ["name", "email", "age", "gender", "aadhaar", "pan"];
+    const fields = [
+      "name",
+      "email",
+      "age",
+      "gender",
+      "adhaarNum",
+      "panCardNum",
+    ];
     const filledFields = fields.filter((field) => profile[field]);
     return (filledFields.length / fields.length).toFixed(3) * 100;
   };
@@ -135,7 +172,7 @@ function Profile() {
       <div className="flex items-center space-x-4 mb-6">
         <div className="relative">
           <img
-            src={avatar}
+            src={profilePhoto}
             alt="Profile"
             className="w-24 h-24 rounded-full border-4 border-blue-500 object-cover"
           />
@@ -145,7 +182,7 @@ function Profile() {
               <input
                 type="file"
                 accept="image/*"
-                onChange={handleAvatarChange}
+                onChange={handleprofilePhotoChange}
                 className="hidden"
               />
             </label>
@@ -157,7 +194,9 @@ function Profile() {
       </div>
 
       <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-4">Personal Information</h3>
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">
+          Personal Information
+        </h3>
         <div className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium">Email</label>
@@ -197,22 +236,26 @@ function Profile() {
             </select>
           </div>
           <div>
-            <label className="block text-gray-700 font-medium">Aadhaar Number</label>
+            <label className="block text-gray-700 font-medium">
+              Adhaar Number
+            </label>
             <input
               type="text"
-              name="aadhaar"
-              value={formData.aadhaar}
+              name="adhaarNum"
+              value={formData.adhaarNum}
               onChange={handleChange}
               disabled={!editing}
               className="w-full border p-2 rounded focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium">PAN Number</label>
+            <label className="block text-gray-700 font-medium">
+              PAN Number
+            </label>
             <input
               type="text"
-              name="pan"
-              value={formData.pan}
+              name="panCardNum"
+              value={formData.panCardNum}
               onChange={handleChange}
               disabled={!editing}
               className="w-full border p-2 rounded focus:outline-none"
@@ -230,7 +273,11 @@ function Profile() {
             className="bg-green-500 text-white px-4 py-2 rounded flex items-center"
             disabled={saving}
           >
-            {saving ? <FaSpinner className="animate-spin mr-2" /> : <FaSave className="mr-2" />}
+            {saving ? (
+              <FaSpinner className="animate-spin mr-2" />
+            ) : (
+              <FaSave className="mr-2" />
+            )}
             {saving ? "Saving..." : "Save"}
           </motion.button>
         ) : (
@@ -246,11 +293,18 @@ function Profile() {
       </div>
 
       <div className="mt-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">Profile Completion</h3>
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+          Profile Completion
+        </h3>
         <div className="w-full bg-gray-200 rounded-full h-4">
-          <div className="bg-blue-500 h-4 rounded-full" style={{ width: `${calculateCompletion()}%` }}></div>
+          <div
+            className="bg-blue-500 h-4 rounded-full"
+            style={{ width: `${calculateCompletion()}%` }}
+          ></div>
         </div>
-        <p className="text-gray-600 mt-2 text-center">{calculateCompletion()}% Complete</p>
+        <p className="text-gray-600 mt-2 text-center">
+          {calculateCompletion()}% Complete
+        </p>
       </div>
     </motion.div>
   );
