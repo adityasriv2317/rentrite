@@ -8,7 +8,7 @@ import MainLayout from "./layouts/MainLayout";
 
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import Agreements from "./pages/Agreements";
+import RentalAgreement from "./pages/RentalAgreements";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile, {ProfileProvider } from "./pages/Profile";
@@ -36,9 +36,9 @@ function App() {
               <Route
                 path="/agreements"
                 element={
-                  <ProtectedRoute>
-                    <Agreements />
-                  </ProtectedRoute>
+                  // <ProtectedRoute>
+                    <RentalAgreement />
+                  // </ProtectedRoute>
                 }
               />
               <Route

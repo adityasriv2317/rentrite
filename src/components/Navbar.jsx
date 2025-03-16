@@ -30,7 +30,7 @@ function Navbar() {
         <NavItem to="/" label="Home" icon={<FaHome />} />
         {user ? (
           <>
-            <NavItem to="/dashboard" label="Dashboard" icon={<FaChartPie />} />
+            <NavItem to="/dashboard" label="Lawyers" icon={<FaChartPie />} />
             <NavItem to="/agreements" label="Agreements" icon={<FaFileContract />} />
             <NavItem to="/profile" label="Profile" icon={<FaUser />} />
             <LogoutButton />
@@ -56,7 +56,7 @@ function Navbar() {
             <NavItem to="/" label="Home" icon={<FaHome />} onClick={() => setIsOpen(false)} />
             {user ? (
               <>
-                <NavItem to="/dashboard" label="Dashboard" icon={<FaChartPie />} onClick={() => setIsOpen(false)} />
+                <NavItem to="/dashboard" label="Lawyer" icon={<FaChartPie />} onClick={() => setIsOpen(false)} />
                 <NavItem to="/agreements" label="Agreements" icon={<FaFileContract />} onClick={() => setIsOpen(false)} />
                 <NavItem to="/profile" label="Profile" icon={<FaUser />} onClick={() => setIsOpen(false)} />
                 <LogoutButton />

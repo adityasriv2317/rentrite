@@ -1,9 +1,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FaChevronDown, FaChevronUp, FaCommentDots, FaVideo } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaVideo } from "react-icons/fa";
+import axios from "axios";
 
 function Card({ lawyer }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isCalling, setIsCalling] = useState(false);
+  const [callLink, setCallLink] = useState("");
+
+  const handleCall = async () => {
+    const callapi =
+      "https://rentify-fm53.onrender.com/api/video/generate-meeting";
+    const response = await axios.get(callapi);
+    console.log(response.data);
+    setCallLink(response.data.meetingURL);
+    setIsCalling(true);
+  };
 
   return (
     <div className="relative">
@@ -11,7 +23,9 @@ function Card({ lawyer }) {
         layoutId={lawyer.id}
         animate={{ scale: isExpanded ? 1.03 : 1 }}
         className={`relative bg-white p-6 rounded-2xl shadow-lg transition-all cursor-pointer ${
-          isExpanded ? "z-50 shadow-2xl border mx-auto border-blue-400 absolute w-[320px]" : ""
+          isExpanded
+            ? "z-50 shadow-2xl border mx-auto border-blue-400 absolute w-[320px]"
+            : ""
         }`}
       >
         {/* Basic Info */}
@@ -60,13 +74,23 @@ function Card({ lawyer }) {
                 <strong>Phone:</strong> {lawyer.phone}
               </p>
             )}
+            {
+              /* video call link */
+              isCalling && (
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                  <a href={callLink} target="blank" className="text-gray-600">
+                    Call Link
+                  </a>
+                </div>
+              )
+            }
 
             {/* Buttons */}
             <div className="flex flex-col gap-3 mt-4">
-              <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2 transition-all">
-                <FaCommentDots /> Contact
-              </button>
-              <button className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 flex items-center gap-2 transition-all">
+              <button
+                onClick={handleCall}
+                className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 flex items-center gap-2 transition-all"
+              >
                 <FaVideo /> Video Call
               </button>
             </div>
