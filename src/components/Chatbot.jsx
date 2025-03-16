@@ -32,6 +32,7 @@ const Chatbot = () => {
       });
       
       const botMessage = { sender: "bot", text: response.data.response };
+      console.log(botMessage);
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Error fetching chatbot response:", error);
@@ -62,7 +63,7 @@ const Chatbot = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
+            className="fixed inset-0 z-50 flex items-center justify-center px-3 bg-gray-800 bg-opacity-50"
           >
             <div className="bg-white w-full max-w-md h-3/4 p-6 rounded-lg shadow-xl flex flex-col">
               <div className="flex justify-between items-center border-b pb-3">
@@ -81,7 +82,7 @@ const Chatbot = () => {
                     {msg.text}
                   </div>
                 ))}
-                {loading && <div className="text-gray-500">Typing...</div>}
+                {loading && <div className="text-gray-500">Generating...</div>}
               </div>
               
               <div className="flex items-center mt-3">

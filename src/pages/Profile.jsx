@@ -1,12 +1,10 @@
 import { useState, useContext, createContext, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { FaEdit, FaSave, FaSpinner } from "react-icons/fa";
+import { FaEdit, FaSave, FaSpinner, FaCamera } from "react-icons/fa";
 
-// Create Profile Context
+// Profile Context
 const ProfileContext = createContext();
-
-// API Base URL
 const API_URL = "https://rentify-fm53.onrender.com/users/update-profile";
 
 // Profile Provider
@@ -17,9 +15,9 @@ export function ProfileProvider({ children }) {
     gender: "Male",
     aadhaar: "1234-5678-9012",
     pan: "ABCDE1234F",
+    avatar: "", // Profile Picture URL
   });
 
-  // Function to update profile
   const updateProfile = async (updatedData) => {
     try {
       const response = await axios.post(API_URL, updatedData);
@@ -45,14 +43,15 @@ export function useProfile() {
 
 // Profile Component
 function Profile() {
-  const { profile, setProfile, updateProfile } = useProfile();
+  const { profile, updateProfile } = useProfile();
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(profile);
+  const [avatar, setAvatar] = useState(profile.avatar || "https://via.placeholder.com/150");
 
-  // Update form data when profile changes
   useEffect(() => {
     setFormData(profile);
+    setAvatar(profile.avatar || "https://via.placeholder.com/150");
   }, [profile]);
 
   // Handle input change
@@ -63,9 +62,21 @@ function Profile() {
   // Handle profile update
   const handleUpdate = async () => {
     setLoading(true);
-    await updateProfile(formData);
+    await updateProfile({ ...formData, avatar });
     setEditing(false);
     setLoading(false);
+  };
+
+  // Handle avatar change
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -73,17 +84,33 @@ function Profile() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg mt-10"
+      className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg mt-10"
     >
-      <h2 className="text-2xl font-bold text-center mb-4 text-blue-600">Profile</h2>
+      {/* Profile Header */}
+      <div className="flex items-center space-x-4">
+        {/* Avatar Section */}
+        <div className="relative">
+          <img src={avatar} alt="Profile" className="w-24 h-24 rounded-full border-4 border-blue-500 object-cover" />
+          {editing && (
+            <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer">
+              <FaCamera />
+              <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+            </label>
+          )}
+        </div>
 
-      <div className="space-y-4">
+        {/* Profile Info */}
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">{profile.name}</h2>
+          <p className="text-gray-500">{profile.age} years old</p>
+          <p className="text-gray-500">{profile.gender}</p>
+        </div>
+      </div>
+
+      {/* Editable Fields */}
+      <div className="mt-6 space-y-4">
         {/* Name */}
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <label className="block text-gray-700 font-medium">Name</label>
           <input
             type="text"
@@ -93,14 +120,10 @@ function Profile() {
             disabled={!editing}
             className="w-full border p-2 rounded focus:outline-none"
           />
-        </motion.div>
+        </div>
 
         {/* Age */}
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
+        <div>
           <label className="block text-gray-700 font-medium">Age</label>
           <input
             type="number"
@@ -110,14 +133,10 @@ function Profile() {
             disabled={!editing}
             className="w-full border p-2 rounded focus:outline-none"
           />
-        </motion.div>
+        </div>
 
         {/* Gender */}
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+        <div>
           <label className="block text-gray-700 font-medium">Gender</label>
           <select
             name="gender"
@@ -131,14 +150,10 @@ function Profile() {
             <option value="Female">Female</option>
             <option value="Other">Other</option>
           </select>
-        </motion.div>
+        </div>
 
         {/* Aadhaar */}
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        <div>
           <label className="block text-gray-700 font-medium">Aadhaar Number</label>
           <input
             type="text"
@@ -148,14 +163,10 @@ function Profile() {
             disabled={!editing}
             className="w-full border p-2 rounded focus:outline-none"
           />
-        </motion.div>
+        </div>
 
         {/* PAN */}
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
+        <div>
           <label className="block text-gray-700 font-medium">PAN Number</label>
           <input
             type="text"
@@ -165,7 +176,7 @@ function Profile() {
             disabled={!editing}
             className="w-full border p-2 rounded focus:outline-none"
           />
-        </motion.div>
+        </div>
       </div>
 
       {/* Buttons */}

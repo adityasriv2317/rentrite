@@ -11,7 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Agreements from "./pages/Agreements";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Profile, { ProfileProvider } from "./pages/Profile";
+import Profile, {ProfileProvider } from "./pages/Profile";
 
 function App() {
   return (
