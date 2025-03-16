@@ -10,6 +10,7 @@ const API_URL = "https://rentify-fm53.onrender.com";
 // Auth Provider Component
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Load user from localStorage on app start
   useEffect(() => {
@@ -21,6 +22,7 @@ export function AuthProvider({ children }) {
         console.error("Failed to parse user from localStorage", error);
       }
     }
+    setLoading(false);
   }, []);
 
   // Signup function
@@ -56,7 +58,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

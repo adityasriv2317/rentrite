@@ -10,7 +10,7 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-blue-600 p-4 text-white shadow-md flex justify-between items-center relative font-[Poppins]">
+    <nav className="bg-blue-600 px-12 py-4 text-white shadow-md flex justify-between items-center relative font-[Poppins]">
       {/* Logo */}
       <Link to="/" className="text-2xl font-bold flex items-center gap-2">
         <FaFileAlt className="text-white" />

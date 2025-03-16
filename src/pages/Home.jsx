@@ -2,10 +2,12 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { FaArrowUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 function Home() {
   const navigate = useNavigate();
   const [showTopBtn, setShowTopBtn] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,15 +39,15 @@ function Home() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg shadow-lg hover:bg-gray-200 transition"
+              className="px-6 py-3 bg-gray-100 text-blue-600 cursor-pointer font-bold rounded-lg shadow-lg hover:bg-white transition"
               onClick={() => navigate("/register")}
             >
-              Get Started
+              {user ? "Dashboard" : "Get Started"}
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 border border-white text-white font-bold rounded-lg shadow-lg hover:bg-white hover:text-blue-600 transition"
+              className="px-6 py-3 border border-white text-white font-bold cursor-pointer rounded-lg shadow-lg hover:bg-white hover:text-blue-600 transition"
               onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
             >
               Learn More
