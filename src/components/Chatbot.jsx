@@ -76,7 +76,7 @@ const Chatbot = () => {
                 </button>
               </div>
               
-              <div className="flex-1 overflow-y-auto p-2 text-gray-700">
+              <div className="flex-1 overflow-y-auto py-2 text-gray-700">
                 {messages.map((msg, index) => (
                   <div key={index} className={`p-2 my-1 rounded-lg ${msg.sender === "user" ? "bg-blue-100 self-end" : "bg-gray-200 self-start"}`}>
                     {msg.text}
