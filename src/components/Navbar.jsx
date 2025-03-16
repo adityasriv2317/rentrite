@@ -77,18 +77,21 @@ function Navbar() {
 // Reusable Nav Item with hover animation
 function NavItem({ to, label, icon, onClick }) {
   return (
-    <motion.div whileHover={{ scale: 1.1 }} className="relative" onClick={onClick}>
-      <Link to={to} className="flex items-center gap-2 text-lg font-medium px-3 py-1">
-        {icon} {label}
+    <motion.div whileHover={{ scale: 1.05 }} className="relative" onClick={onClick}>
+      <Link
+        to={to}
+        className="group flex items-center gap-2 text-lg font-medium px-4 py-2 relative overflow-hidden"
+      >
+        {icon}
+        <span className="relative z-10">{label}</span>
+        {/* Underline Animation */}
+        <motion.div
+          className="absolute bottom-0 left-0 w-full h-[2px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
+        />
       </Link>
-      <motion.div
-        className="absolute bottom-0 left-0 w-full h-[2px] bg-white rounded"
-        initial={{ width: 0 }}
-        whileHover={{ width: "100%" }}
-        transition={{ duration: 0.3 }}
-      />
     </motion.div>
   );
 }
+
 
 export default Navbar;
