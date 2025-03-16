@@ -23,6 +23,11 @@ function Dashboard() {
     lawyer.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const toSentenceCase = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
       {/* Header */}
@@ -32,7 +37,7 @@ function Dashboard() {
         transition={{ duration: 0.5 }}
         className="text-4xl font-bold text-blue-600 text-center"
       >
-        Welcome, {user?.name || "User"}!
+        Welcome, {toSentenceCase(user?.name) || "User"}...
       </motion.h2>
 
       {/* Search Bar */}
