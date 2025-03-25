@@ -33,6 +33,18 @@ Ensure you have the following installed on your system:
 - Java (JDK 11+)  
 - PostgreSQL (or any supported database)  
 
+### 📂 Repository Structure
+RentRite/
+│── backend/          # Spring Boot backend
+│── frontend/         # React.js frontend
+│── ml-model/        # AI-based document verification
+│── README.md        # Project Documentation
+
+##🚀 Made with ❤️ by the Team HeisenBugs!
+`<@adityasriv2317>`,
+`<@abhishekrajdhar>`,
+`<@alokyadav686>`,
+`<@AyushInKC`
 
 
 
