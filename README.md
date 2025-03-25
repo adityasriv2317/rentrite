@@ -1,8 +1,6 @@
 # RentRite 🏡  
 ### A Smart Rental Agreement Platform  
 
-![RentRite Banner](<Add Banner Image URL>)  
-
 ## 🚀 About the Project  
 RentRite is a web application designed to simplify and streamline **rental agreement management** by leveraging **AI-powered document verification** and a seamless user experience.  
 
